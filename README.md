@@ -73,3 +73,79 @@ To stop the running containers, press Ctrl + C in the terminal and then run:
 ```bash
 docker-compose down
 ```
+
+**API Endpoints (Backend)**
+The following API endpoints are available in the backend:
+- POST /api/users/login: User login
+- POST /api/users/register: User registration
+- GET /api/tasks: Retrieve all tasks
+- POST /api/tasks: Create a new task
+- PUT /api/tasks/: Update a task
+- DELETE /api/tasks/: Delete a task
+
+**Sample API Requests**
+You can use the following sample requests to interact with the backend API:
+- Login Request:
+```bash
+POST /api/users/login
+Content-Type: application/json
+
+{
+    "username": "yourusername",
+    "password": "yourpassword"
+}
+```
+- Create a Task:
+```bash
+POST /api/tasks
+Content-Type: application/json
+
+{
+    "title": "Sample Task",
+    "description": "Task description"
+}
+```
+
+## Development (without Docker)
+If you prefer to run the frontend and backend without Docker, follow these steps.
+**Backend (Todo-Api)**
+1. Navigate to the Todo-Api folder:
+```bash
+cd Todo-Api
+```
+2. Install dependencies:
+```bash
+npm install
+```
+3. Start the server:
+```bash
+npm run dev
+```
+
+**Frontend (Todo-Web)**
+1. Navigate to the Todo-Web folder:
+```bash
+cd Todo-Web
+```
+2. Install dependencies:
+```bash
+npm install
+```
+3. Start the server:
+```bash
+npm run dev
+```
+**MongoDB**
+Ensure MongoDB is running, either locally or in a Docker container. Update the MONGO_URI in the .env file accordingly.
+
+**Future Improvements**
+- Add user profile management.
+- Implement task prioritization and filtering.
+- Improve error handling and input validation.
+- Bug fixing
+
+**Contributing**
+Feel free to submit issues, fork the repository, and create pull requests.
+
+## License
+This project is licensed under the MIT License. See the LICENSE file for details.
