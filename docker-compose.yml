@@ -17,7 +17,7 @@ services:
       ports:
         - '5000:5000'
       environment:
-        - JWT_SECRET=yJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.C0dPeB9pQiQrTeaSwEumidK0gvenpfIuEYwA3Fy29MA
+        - JWT_SECRET=your_secret_key
       depends_on:
         - mongo
       networks:
