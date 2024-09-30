@@ -57,7 +57,7 @@ You can run both the frontend and backend using Docker Compose.
 1. Ensure Docker is running.
 2. In the root of the project directory (where the docker-compose.yml is located), run:
 ```bash
-docker-compose up --build
+docker compose up --build
 ```
 
 This will start the backend, frontend, and MongoDB services.
@@ -71,7 +71,7 @@ You can interact with the API using Postman or similar tools and view the fronte
 **Stopping the Containers**
 To stop the running containers, press Ctrl + C in the terminal and then run:
 ```bash
-docker-compose down
+docker compose down
 ```
 
 **API Endpoints (Backend)**
@@ -107,7 +107,7 @@ Content-Type: application/json
 ```
 
 ## Development (without Docker)
-If you prefer to run the frontend and backend without Docker, follow these steps.
+If you want to run the frontend and backend without Docker, please follow these steps.
 **Backend (Todo-Api)**
 1. Navigate to the Todo-Api folder:
 ```bash
