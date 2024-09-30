@@ -1,26 +1,69 @@
 <script setup lang="ts">
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
+import {Button} from '@/components/ui/button'
+import {Card, CardContent, CardDescription, CardHeader, CardTitle} from '@/components/ui/card'
+import {Input} from '@/components/ui/input'
+import {Label} from '@/components/ui/label'
+import {Eye, EyeOff} from "lucide-vue-next";
 
-import { useUserStore } from '@/stores/user';
-import { ref } from 'vue';
+import {ref} from 'vue';
+import {toast} from "~/components/ui/toast";
 
-const userStore = useUserStore();
-const username = ref('');
-const password = ref('');
+useHead({
+  title: 'Login - ToDo App',
+})
+
+const username = ref('')
+const password = ref('')
+const loginError = ref('')
+const showPassword = ref(false)
+
+const passwordInputType = computed(() => (showPassword.value ? 'text' : 'password'))
+
+const config = useRuntimeConfig()
 
 const login = async () => {
-  // await userStore.login(username.value, password.value);
-  // await useRouter().push('/tasks');
-};
+  const {data, error} = await useAsyncData(
+      'login',
+      () => $fetch(`${config.public.apiBase}/api/v1/users/login`, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+        method: 'POST',
+        body: {
+          username: username.value,
+          password: password.value
+        }
+      })
+  )
+
+  if (error.value) {
+    loginError.value = error.value.data.message || 'Login failed'
+
+    toast(({
+      title: 'Login failed',
+      description: error.value.data.message,
+      variant: 'destructive',
+    }))
+  } else {
+    const token = data.value?.token || ''
+    const user = data.value?.username || ''
+
+    if (import.meta.client) {
+      localStorage.setItem('token', token)
+      localStorage.setItem('user', user)
+    }
+
+    await useRouter().push('/tasks')
+  }
+}
 </script>
 
 <template>
   <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0">
     <div class="w-full sm:max-w-md overflow-hidden">
-      <form @submit="login">
+      <form @submit.prevent="login">
+        <span v-if="loginError">{{ loginError.value }}</span>
         <Card class="mx-auto max-w-sm">
           <CardHeader>
             <CardTitle class="text-2xl">
@@ -33,12 +76,12 @@ const login = async () => {
           <CardContent>
             <div class="grid gap-4">
               <div class="grid gap-2">
-                <Label for="email">Username</Label>
+                <Label for="username">Username</Label>
                 <Input
                     v-model="username"
                     id="username"
                     type="text"
-                    placeholder="your.email@example.com"
+                    placeholder="your username"
                     required
                 />
               </div>
@@ -49,13 +92,29 @@ const login = async () => {
                     Forgot your password?
                   </a>
                 </div>
-                <Input
-                    v-model="password"
-                    id="password"
-                    type="password"
-                    placeholder="*********"
-                    required
-                />
+                <div class="relative">
+                  <Input
+                      v-model="password"
+                      id="password"
+                      :type="passwordInputType"
+                      placeholder="*********"
+                      required
+                      class="pr-10"
+                  />
+
+                  <button
+                      type="button"
+                      @click="showPassword = !showPassword"
+                      class="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                  >
+                    <template v-if="showPassword">
+                      <EyeOff class="w-4 h-4" />
+                    </template>
+                    <template v-else>
+                      <Eye class="w-4 h-4" />
+                    </template>
+                  </button>
+                </div>
               </div>
               <Button type="submit" class="w-full">
                 Login

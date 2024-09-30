@@ -1,10 +1,96 @@
+<script setup>
+import {ref, onMounted, h} from 'vue';
+import {useForm} from 'vee-validate'
+import {toTypedSchema} from '@vee-validate/zod'
+import * as z from 'zod'
+
+import {toast} from '@/components/ui/toast/use-toast'
+import {Button} from '@/components/ui/button'
+import {Input} from '@/components/ui/input'
+import {Textarea} from '@/components/ui/textarea'
+import {
+  TagsInput,
+  TagsInputInput,
+  TagsInputItem,
+  TagsInputItemDelete,
+  TagsInputItemText
+} from '@/components/ui/tags-input'
+import {FormField, FormItem, FormLabel, FormControl, FormDescription, FormMessage} from '@/components/ui/form'
+
+import {useTaskStore} from '@/stores/task';
+
+definePageMeta({
+  middleware: 'auth'
+})
+
+const taskStore = useTaskStore();
+const newTask = ref('');
+
+const formSchema = toTypedSchema(z.object({
+  username: z
+      .string()
+      .min(2)
+      .max(50),
+  subjects: z
+      .array(z.string())
+      .min(1)
+      .max(3),
+  taskDescription: z
+      .string()
+      .max(160, {
+        message: 'Bio must not be longer than 30 characters.',
+      }),
+}))
+
+const {isFieldDirty, handleSubmit} = useForm({
+  validationSchema: formSchema,
+  initialValues: {
+    subjects: [],
+  }
+})
+
+const onSubmit = handleSubmit((values) => {
+  toast({
+    title: 'You submitted the following values:',
+    description: h('pre', {class: 'mt-2 w-[340px] rounded-md bg-slate-950 p-4'}, h('code', {class: 'text-white'}, JSON.stringify(values, null, 2))),
+  })
+})
+
+const createTask = async () => {
+  await taskStore.createTask(newTask.value);
+  newTask.value = '';
+};
+
+const markDone = async (task) => {
+  await taskStore.updateTask(task.id, 'done');
+};
+
+const deleteTask = async (id) => {
+  await taskStore.deleteTask(id);
+};
+
+const logout = () => {
+  localStorage.removeItem('token')
+  useRouter().push('/login')
+}
+
+onMounted(async () => {
+  await taskStore.fetchTasks();
+});
+
+const tasks = taskStore.tasks;
+</script>
 <template>
   <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-[#f8fafc]">
     <div class="w-full sm:max-w-screen-lg overflow-hidden">
       <div class="grid md:grid-cols-2 lg:grid-cols-3">
         <!-- Column 1 - Profile and Stats -->
         <div class="space-y-4">
-          <h1 class="text-xl font-medium">Hi, Febryan Sambuari</h1>
+          <div class="flex flex-row justify-between">
+            <h1 class="text-xl font-medium">Hi, Febryan Sambuari</h1>
+
+            <Button @click="logout" variant="link">Logut</Button>
+          </div>
 
           <div class="flex flex-col gap-2">
             <Card class="w-2/3">
@@ -103,77 +189,3 @@
     </div>
   </div>
 </template>
-
-<script setup>
-import {ref, onMounted, h} from 'vue';
-import {useForm} from 'vee-validate'
-import {toTypedSchema} from '@vee-validate/zod'
-import * as z from 'zod'
-
-import {toast} from '@/components/ui/toast/use-toast'
-import {Button} from '@/components/ui/button'
-import {Input} from '@/components/ui/input'
-import {Textarea} from '@/components/ui/textarea'
-import {
-  TagsInput,
-  TagsInputInput,
-  TagsInputItem,
-    TagsInputItemDelete,
-  TagsInputItemText
-} from '@/components/ui/tags-input'
-import {FormField, FormItem, FormLabel, FormControl, FormDescription, FormMessage} from '@/components/ui/form'
-
-import {useTaskStore} from '@/stores/task';
-
-const taskStore = useTaskStore();
-const newTask = ref('');
-
-const formSchema = toTypedSchema(z.object({
-  username: z
-    .string()
-    .min(2)
-    .max(50),
-  subjects: z
-    .array(z.string())
-    .min(1)
-    .max(3),
-  taskDescription: z
-    .string()
-    .max(160, {
-      message: 'Bio must not be longer than 30 characters.',
-    }),
-}))
-
-const {isFieldDirty, handleSubmit} = useForm({
-  validationSchema: formSchema,
-  initialValues: {
-    subjects: [],
-  }
-})
-
-const onSubmit = handleSubmit((values) => {
-  toast({
-    title: 'You submitted the following values:',
-    description: h('pre', {class: 'mt-2 w-[340px] rounded-md bg-slate-950 p-4'}, h('code', {class: 'text-white'}, JSON.stringify(values, null, 2))),
-  })
-})
-
-const createTask = async () => {
-  await taskStore.createTask(newTask.value);
-  newTask.value = '';
-};
-
-const markDone = async (task) => {
-  await taskStore.updateTask(task.id, 'done');
-};
-
-const deleteTask = async (id) => {
-  await taskStore.deleteTask(id);
-};
-
-onMounted(async () => {
-  await taskStore.fetchTasks();
-});
-
-const tasks = taskStore.tasks;
-</script>

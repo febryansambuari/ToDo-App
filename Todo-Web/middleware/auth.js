@@ -1,8 +1,8 @@
 export default defineNuxtRouteMiddleware((to, from) => {
-  const user = useState('user') // Get the user from state or authentication token
+  const token = import.meta.client ? localStorage.getItem('token') : null
 
-  if (!user.value && to.path !== '/login') {
-    // Redirect to login if not authenticated
+  // If the user is not logged in, redirect to the login page
+  if (!token && to.name !== 'login') {
     return navigateTo('/login')
   }
 })

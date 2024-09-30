@@ -1,5 +1,10 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
+  runtimeConfig: {
+    public: {
+      apiBase: 'http://localhost:5000'
+    }
+  },
   router: {
     middleware: ['auth'],
   },
@@ -16,5 +21,11 @@ export default defineNuxtConfig({
     componentDir: './components/ui'
   },
   compatibilityDate: '2024-04-03',
-  devtools: { enabled: true }
+  devtools: {
+    enabled: true,
+
+    timeline: {
+      enabled: true
+    }
+  }
 })

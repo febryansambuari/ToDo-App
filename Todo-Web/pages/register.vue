@@ -3,6 +3,14 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import {ref} from "vue";
+
+useHead({
+  title: 'Register - ToDo App'
+})
+
+const username = ref('')
+const password = ref('')
 </script>
 
 <template>
@@ -19,22 +27,12 @@ import { Label } from '@/components/ui/label'
         </CardHeader>
         <CardContent>
           <div class="grid gap-4">
-            <div class="grid grid-cols-2 gap-4">
-              <div class="grid gap-2">
-                <Label for="first-name">First name</Label>
-                <Input id="first-name" placeholder="Max" required />
-              </div>
-              <div class="grid gap-2">
-                <Label for="last-name">Last name</Label>
-                <Input id="last-name" placeholder="Robinson" required />
-              </div>
-            </div>
             <div class="grid gap-2">
-              <Label for="email">Email</Label>
+              <Label for="username">Username</Label>
               <Input
-                id="email"
-                type="email"
-                placeholder="m@example.com"
+                id="username"
+                type="text"
+                placeholder="your username"
                 required
               />
             </div>

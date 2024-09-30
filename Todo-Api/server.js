@@ -2,6 +2,7 @@ const express = require('express')
 const mongoose = require('mongoose')
 const morgan = require('morgan')
 const dotenv = require('dotenv')
+const cors = require('cors')
 const userRoutes = require('./routes/userRoutes')
 const taskRoutes = require('./routes/taskRoutes')
 
@@ -9,6 +10,14 @@ dotenv.config()
 
 const app = express()
 const PORT = process.env.PORT || 5000
+
+const corsOptions = {
+    origin: 'http://localhost:3000',
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+}
+
+app.use(cors(corsOptions))
 
 app.use(morgan('dev'))
 app.use(express.json())

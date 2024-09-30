@@ -4,7 +4,7 @@ export const useTaskStore = defineStore('task', {
   }),
   actions: {
     async fetchTasks() {
-      const { data } = await $fetch('/api/tasks', {
+      const { data } = await $fetch('http://localhost:5000/api/v1/tasks', {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
@@ -12,7 +12,7 @@ export const useTaskStore = defineStore('task', {
       this.tasks = data.value;
     },
     async createTask(subject: string) {
-      await $fetch('/api/tasks', {
+      await $fetch('http://localhost:5000/api/v1/tasks', {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
@@ -22,7 +22,7 @@ export const useTaskStore = defineStore('task', {
       this.fetchTasks();
     },
     async updateTask(id: string, status: string) {
-      await $fetch(`/api/tasks/${id}`, {
+      await $fetch(`http://localhost:5000/api/v1/tasks${id}`, {
         method: 'PUT',
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
@@ -32,7 +32,7 @@ export const useTaskStore = defineStore('task', {
       this.fetchTasks();
     },
     async deleteTask(id: string) {
-      await $fetch(`/api/tasks/${id}`, {
+      await $fetch(`http://localhost:5000/api/v1/tasks${id}`, {
         method: 'DELETE',
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
